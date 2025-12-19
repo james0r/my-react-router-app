@@ -2,13 +2,14 @@ import {
   isRouteErrorResponse,
   Links,
   Meta,
+  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "react-router";
+} from "react-router"
 
-import type { Route } from "./+types/root";
-import "./app.css";
+import type { Route } from "./+types/root"
+import "./app.css"
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -21,7 +22,7 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
-];
+]
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -32,33 +33,52 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-gray-50">
         {children}
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
 export default function App() {
-  return <Outlet />;
+  const linkClasses = 'mx-4'
+
+  return (
+    <>
+      <nav className="px-8 py-4 mx-auto shadow-md">
+        <div className="container flex justify-between mx-auto">
+          <NavLink to="/"> RRv7 CRUD </NavLink>
+          <div className="">
+            <NavLink to="/" className={
+              ({ isActive }) => isActive ? `text-indigo-600 font-bold ${linkClasses}` : `text-gray-600 ${linkClasses}`
+              }> Items </NavLink>
+            <NavLink to="/new" className={({ isActive }) => isActive ? `text-indigo-600 font-bold ${linkClasses}` : `text-gray-600 ${linkClasses}`}> New Item </NavLink>
+          </div>
+        </div>
+      </nav>
+      <main className="my-4 container mx-auto">
+        <Outlet />
+      </main>
+    </>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
-  let stack: string | undefined;
+  let message = "Oops!"
+  let details = "An unexpected error occurred."
+  let stack: string | undefined
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "404" : "Error"
     details =
       error.status === 404
         ? "The requested page could not be found."
-        : error.statusText || details;
+        : error.statusText || details
   } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    details = error.message
+    stack = error.stack
   }
 
   return (
@@ -71,5 +91,5 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         </pre>
       )}
     </main>
-  );
+  )
 }
